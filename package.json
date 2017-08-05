@@ -1,0 +1,27 @@
+{
+  "name": "indifferenceoptimizer",
+  "version": "1.0.0",
+  "description": "Scheduler/draft where people can express indifference",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/halvorson/indifferenceOptimizer.git"
+  },
+  "author": "Halvorson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/halvorson/indifferenceOptimizer/issues"
+  },
+  "homepage": "https://github.com/halvorson/indifferenceOptimizer#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "express-handlebars": "^3.0.0",
+    "method-override": "^2.3.9",
+    "moment": "^2.18.1",
+    "mysql": "^2.14.1"
+  }
+}
