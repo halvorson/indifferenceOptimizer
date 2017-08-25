@@ -2,6 +2,7 @@ var moment = require("moment");
 
 var calendar = function(dayInMonth) {
 	console.log("I'm alive");
+	console.log(dayInMonth);
 	var referenceDate = dayInMonth || moment();
 	console.log(referenceDate.format());
 	var beginningOfCal = referenceDate.clone().startOf('month').startOf('week');
@@ -14,7 +15,7 @@ var calendar = function(dayInMonth) {
 	var loopDate = beginningOfCal.clone();
 
 	var weeksInMonth = Math.ceil(endOfCal.diff(beginningOfCal, 'week'));
-	console.log(weeksInMonth);
+	//console.log(weeksInMonth);
 
 	for (var j = 0; j<=weeksInMonth; j++) {
 		var weekCalendar = {};
@@ -40,7 +41,7 @@ var calendar = function(dayInMonth) {
 		}
 		weekCalendar.weekDates = weekDates;
 		monthlyCalendar.push(weekCalendar);
-		console.log(weekCalendar);
+		//console.log(weekCalendar);
 	} 
 	//console.log(monthlyCalendar);
 	return monthlyCalendar;

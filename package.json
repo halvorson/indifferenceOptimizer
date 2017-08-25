@@ -20,8 +20,14 @@
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "express-handlebars": "^3.0.0",
+    "handlebars.moment": "^1.0.4",
     "method-override": "^2.3.9",
     "moment": "^2.18.1",
-    "mysql": "^2.14.1"
+    "mysql": "^2.14.1",
+    "mysql2": "^1.4.1",
+    "sequelize": "^4.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
   }
 }

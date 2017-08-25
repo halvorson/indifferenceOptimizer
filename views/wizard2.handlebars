@@ -1,0 +1,114 @@
+<div class="container">
+
+	<div class="jumbotron">
+		<h1 class="text-center"><span class="glyphicon glyphicon-fire"></span>Indifference Optimizer</h1>
+		
+		<div class="text-center">
+			<a href="/calendar"><button type="button" class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-list-alt"></span> Calendar</button></a>
+			<a href="/"><button type="button" class="btn btn-lg btn-danger">Home</button></a>
+			<a href="/wizard"><button type="button" class="btn btn-lg btn-info">Wizard</button></a>
+		</div>
+
+	</div>
+
+	{{!-- Add if campaign already launched --}}
+	{{!-- Add if campaign not found (no appointments) --}}
+
+	<div class="row">
+		<div class="col-sm-12">
+			Campaign name: {{campaignId}} 
+			<div class="card">
+				<h4 class="card-header card-primary card-inverse" role="tab" id="headingOne"><a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+					1. Options
+				</a></h4>
+				<div class="card-body collapse show" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
+					<form>
+						<div class="form-group">
+							<label for="campaignName">Campaign name:</label>
+							<input type="text" class="form-control" id="campaignName" placeholder="Campaign name" required>
+						</div>
+						<div class="form-group">
+							<label for="userName">Your name:</label>
+							<input type="text" class="form-control" id="userName" placeholder="John Jacob Jingleheimer Schmidt" required>
+						</div>
+						<div class="form-group">
+							<label for="email">Your email:</label>
+							<input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+							<small id="emailHelp" class="form-text text-muted">We won't sell this. Promise.</small>
+						</div>
+						<div class="form-group">
+							<label for="email">When should we assign appointments?</label>
+							<div class="row">
+								<div class="col">
+									<input type="text" data-provide="datepicker" id="draftDay" class="form-control" placeholder="Date" required>
+								</div>
+								<div class="col">
+									<input type="text" data-provide="timepicker" id="draftTime" class="form-control" placeholder="Time" required>
+								</div>
+							</div>
+							<small id="emailHelp" class="form-text text-muted">Should be after submission deadline and before first appointment</small>
+						</div>
+						<div class="form-check">
+							<label class="form-check-label text-muted future-features">
+								<input type="checkbox" id="authRequired" class="form-check-input" disabled>
+								Logged in users only?
+							</label>
+						</div>
+						<div class="form-check">
+							<label class="form-check-label text-muted future-features">
+								<input type="checkbox" id="sameDomain" class="form-check-input" disabled>
+								Must belong to domain?
+							</label>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="card">
+				<h4 class="card-header card-primary card-inverse" role="tab" id="headingTwo"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+					2. Review/Edit Timeslots
+				</a></h4>
+				<div class="card-body collapse hide" id="collapseTwo" role="tabpanel" aria-labelledby="headingTwo">
+					<table class="table table-sm">
+						<thead>
+							<th>Date</th>
+							<th>Start Time</th>
+							<th>End Time</th>
+							<th>Edit</th>
+						</thead>
+						<tbody>
+							{{#each appointments}}
+							<tr>
+								<td>{{formatDateFromUnix this.starttime 'ddd, DD MMM YYYY'}}</td>
+								<td>{{timeFromUnix this.starttime}}</td>
+								<td>{{timeFromUnix this.endtime}}</td>
+								<td><form action="/api/calendar/{{this.id}}?_method=DELETE" class="deleteForm" data-appointment-id={{this.id}} method="POST">
+									<button class ="btn btn-sm btn-danger delete_button" type="submit">Remove</button>
+								</form></td>
+							</tr>
+							{{/each}}
+							<tr>
+								<form class="addForm">
+									<td><input class="table-time-input" data-provide="datepicker" id="startdate" placeholder="startdate" type="text" required></td>
+									<td><input class="table-time-input" data-provide="timepicker" id="starttime" placeholder="starttime" type="text" required></td>
+									<td><input class="table-time-input" data-provide="timepicker" id="endtime" placeholder="endTime" type="text" required></td>
+									<td><button class ="btn btn-sm btn-primary add_new_button" type="submit">Add new</button></td>
+								</form>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="card">
+				<h4 class="card-header card-primary card-inverse" role="tab" id="headingThree"><a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+					3. Launch
+				</a></h4>
+				<div class="card-body text-center collapse show" id="collapseThree" role="tabpanel" aria-labelledby="headingThree">
+					<button class="btn btn-success btn-lg" id="launchCampaignButton" onclick="launchCampaign(event);" data-campaign-id={{campaignId}}>Launch!</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{!-- Create modal for confirmation --}}
+{{!-- Create modal for thingy having launched --}}

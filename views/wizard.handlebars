@@ -1,0 +1,58 @@
+<div class="container">
+
+	<div class="jumbotron">
+		<h1 class="text-center"><span class="glyphicon glyphicon-fire"></span>Indifference Optimizer</h1>
+		
+		<div class="text-center">
+			<a href="/calendar"><button type="button" class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-list-alt"></span> Calendar</button></a>
+			<a href="/"><button type="button" class="btn btn-lg btn-danger">Home</button></a>
+			<a href="/wizard"><button type="button" class="btn btn-lg btn-info">Wizard</button></a>
+		</div>
+
+	</div>
+
+	<div class="row">
+		<form class="col-sm-12" id="appointmentForm">
+			<div class="card">
+				<div class="card-body">
+					On 
+					<inline class="wrapper">
+						<input class="form-input text-center" id="eventDay" data-provide="datepicker" placeholder="eventDay" type="text" name="eventDay" required>
+						<span class="underline"></span>
+					</inline>
+					, I want to schedule an appointment every 
+					<inline class="wrapper">
+						<input class="form-input form-input-number text-center" placeholder="5" type="number" name="duration"  required>
+						<span class="underline"></span>
+					</inline>
+					minutes from  
+					<inline class="wrapper">
+						<input class="form-input text-center" data-provide="timepicker" data-minute-step="1" id="startTime" name="startTime" placeholder="startTime" type="text" required>
+						<span class="underline"></span>
+					</inline>
+					to  
+					<inline class="wrapper">
+						<input class="form-input text-center" data-provide="timepicker" data-minute-step="1" id="endTime" name="endTime" placeholder="endTime" type="text" required>
+						<span class="underline"></span>
+					</inline>
+					, with a 
+					<inline class="wrapper">
+						<input class="form-input form-input-number text-center" placeholder="0" default=0 name="break" type="number">
+						<span class="underline"></span>
+					</inline>
+					minute break after every 
+					<inline class="wrapper">
+						<input class="form-input form-input-number text-center" placeholder="1" default=1 name="breakCadence" type="number">
+						<span class="underline"></span>
+					</inline>
+					appointment(s).
+					<br>
+					<br>
+					<div class="text-center">
+					<input class="btn btn-success btn-lg" id="createAppointments" type="submit" onclick="submitAppointments(event);" value="Make appointments!"></input>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

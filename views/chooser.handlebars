@@ -1,0 +1,80 @@
+<div class="container">
+
+	<div class="jumbotron">
+		<h1 class="text-center"><span class="glyphicon glyphicon-fire"></span>Indifference Optimizer</h1>
+		
+		<div class="text-center">
+			<a href="/calendar"><button type="button" class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-list-alt"></span> Calendar</button></a>
+			<a href="/"><button type="button" class="btn btn-lg btn-danger">Home</button></a>
+			<a href="/wizard"><button type="button" class="btn btn-lg btn-info">Wizard</button></a>
+		</div>
+
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="card">
+				<h2 class="card-header card-success text-center">Ranking for {{campaign.name}}</h2>
+
+			</div>
+			<div class="card">
+				<h4 class="card-header card-primary card-inverse" role="tab" id="headingOne"><a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+					1. Tell us a little about yourself
+				</a></h4>
+				<div class="card-body collapse show" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
+					<form>
+						<div class="form-group">
+							<label for="userName">Your name:</label>
+							<input type="text" class="form-control" id="userName" placeholder="John Jacob Jingleheimer Schmidt" required>
+						</div>
+						<div class="form-group">
+							<label for="email">Your email:</label>
+							<input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+							<small id="emailHelp" class="form-text text-muted">We won't sell this. Promise.</small>
+						</div>
+					</form>
+				</div>
+			</div>
+			
+			<div class="card">
+				<h4 class="card-header card-primary card-inverse" role="tab" id="headingTwo"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+					2. Take your pick
+				</a></h4>
+				<div class="card-body collapse show" id="collapseTwo" role="tabpanel" aria-labelledby="headingTwo">
+					<table class="table table-sm" id="prefTable">
+						<thead>
+							<th><a data-toggle="tooltip" title="1 is top priority, 0 means can't make it">Priority <i class="fa fa-question-circle" aria-hidden="true"></i></a></th>
+							<th>Date</th>
+							<th>Start Time</th>
+							<th>End Time</th>
+
+						</thead>
+						<tbody>
+							{{#each appointments}}
+							<tr>
+								<td><div class="no-preference preference">
+									<i class="fa fa-times-circle lower-disabled zero-preference" aria-hidden="true"></i> <i class="fa fa-lg fa-minus-circle lower-disabled lower-preference" aria-hidden="true"></i> 
+									<span class="preferenceNumber" data-appointment-id={{this.id}}>0</span> 
+									<i class="fa fa-lg fa-plus-circle higher-preference" aria-hidden="true"></i> <i class="fa fa-chevron-circle-right highest-preference" aria-hidden="true"></i>
+								</div></td>
+								<td>{{formatDateFromUnix this.starttime 'ddd, DD MMM YYYY'}}</td>
+								<td>{{timeFromUnix this.starttime}}</td>
+								<td>{{timeFromUnix this.endtime}}</td>
+							</tr>
+							{{/each}}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="card">
+				<h4 class="card-header card-primary card-inverse" role="tab" id="headingThree"><a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+					3. Submit
+				</a></h4>
+				<div class="card-body text-center collapse show" id="collapseThree" role="tabpanel" aria-labelledby="headingThree">
+					<button class="btn btn-success btn-lg" id="submitPrefs" onclick="submitPrefs(event);" data-campaign-id={{campaignId}}>Submit!</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -5,3 +5,48 @@
 .wrong-month {
 	color: #aaa;
 }
+
+.form-input {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #CCC;
+  box-sizing: border-box;
+  width: 100px;
+
+  &:focus {
+    outline: none;    
+  }
+}
+
+.form-input::-webkit-input-placeholder {
+  color: #AAA;
+}
+
+.form-input:focus::-webkit-input-placeholder {
+  color: dodgerblue;
+}
+
+.form-input:focus+.underline {
+  transform: scale(1);
+}
+
+.form-input-number {
+	width: 50px;
+}
+
+.bootstrap-timepicker-widget table td input {
+  width: 35px;
+}
+
+.preference {
+  font-size: 18px;
+}
+
+.lower-disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.future-features { 
+  cursor: not-allowed;
+}
