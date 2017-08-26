@@ -92,7 +92,7 @@ function launchCampaign(e) {
 	campaign.name = $("#campaignName").val().trim();
 	campaign.draftDay = $("#draftDay").val().trim();
 	campaign.draftTime = $("#draftTime").val().trim();
-	campaign.mustBeAssigned = $("#mustBeAssigned").attr('checked');
+	campaign.mustBeAssigned = $("#mustBeAssigned").prop('checked');
 
 	var submissionObject = {};
 	submissionObject.user = user;

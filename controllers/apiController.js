@@ -90,7 +90,8 @@ module.exports = function(app) {
 			db.campaign.findOrCreate({where: {id: campaign.campaignId}, defaults: {
 				name: campaign.name,
 				userId: campaign.userId,
-				draftDateTime: campaign.draftDateTime
+				draftDateTime: campaign.draftDateTime,
+				mustBeAssigned: campaign.mustBeAssigned
 			}})
 			.spread((campaign, created) => {
 				//logSequelize(campaign);
@@ -161,7 +162,7 @@ module.exports = function(app) {
 
 					var appointmentArray = [];
 					var prefsObj = {};
-					var mustBeAssigned = campaigns[0].mustBeAssigned || false;
+					var mustBeAssigned = (campaigns[0].mustBeAssigned) || false;
 
 					var testObjects = [['a','b','c','d','e','f','g'],
 					{
@@ -175,7 +176,7 @@ module.exports = function(app) {
 					}, true];
 
 					for (var i = 0; i< timeslots.length; i++) {
-						appointmentArray.push(timeslots[i].id);
+						appointmentArray.push(timeslots[i].id+'');
 					};
 
 					// console.log(testObjects[0]);
@@ -198,7 +199,7 @@ module.exports = function(app) {
 						}
 						// console.log(prefsObj);
 						//add
-						prefsObj[userId][priority].push(pref.timeslotId);
+						prefsObj[userId][priority].push(pref.timeslotId+'');
 					}
 					// console.log(testObjects[1]);
 					// console.log(prefsObj);
@@ -219,7 +220,7 @@ module.exports = function(app) {
 		if(Object.keys(assObj).length===0) {
 			db.campaign.update(
 			{ 
-				hasRan: true,
+				hasRan: false,
 				unassignedUsers: unassUsers.join()
 			}, 
 			{ where: { id: campId }} /* where criteria */

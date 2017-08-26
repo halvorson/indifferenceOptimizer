@@ -33,12 +33,13 @@ ef3.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssi
 	var userArrOrder = userArr.slice(0);
 	console.log("Draft order: " + userArrOrder);
 	console.log(preferenceObject);
+	console.log("Must be assigned: " + mustBeAssigned);
 
-	if(typeof mustBeAssigned == 'boolean' && mustBeAssigned) {
-		if(userArr.length > appointmentArray.length) {
-			return {error: "If all people must be assigned, there must be more appointments than people"};
-		}
-	}
+	// if(typeof mustBeAssigned == 'boolean' && mustBeAssigned) {
+	// 	if(userArr.length > appointmentArray.length) {
+	// 		return {error: "If all people must be assigned, there must be more appointments than people"};
+	// 	}
+	// }
 	//Two victory conditions: user module is empty, or appointmentArray is empty
 	while (userArr.length>0 && appointmentArray.length>0) {
 		
@@ -47,10 +48,10 @@ ef3.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssi
 		var lowestRank = lowestNonEmptyRank(preferenceObject[userArr[i]])
 		var lowestRankLength = getCountOfLowestRank(preferenceObject[userArr[i]])
 
-		// console.log("_______________________________________");
-		// console.log("Looping at " + userArr[i]);
-		// console.log("Preferences are: ")
-		// console.log(preferenceObject[userArr[i]]);
+		console.log("_______________________________________");
+		console.log("Looping at " + userArr[i]);
+		console.log("Preferences are: ")
+		console.log(preferenceObject[userArr[i]]);
 
 		//If they have a specific preference that's open, assign person to appointment
 		
@@ -222,8 +223,8 @@ ef3.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssi
 
 		// If we've assigned everybody, we're done!
 		if(Object.keys(promisedPrefs).length === 0 ) {
-			// console.log("Found a local solution:")
-			// console.log(assignmentObject);
+			console.log("Found a local solution:")
+			console.log(assignmentObject);
 			return true;
 		}
 
