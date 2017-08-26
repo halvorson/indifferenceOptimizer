@@ -1,0 +1,39 @@
+<div class="container">
+
+
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="card">
+				<h2 class="card-header card-success text-center">Assignments for {{campaign.name}}</h2>
+			</div>
+			<div class="card">
+				<h4 class="card-header card-primary card-inverse">
+					Results:
+				</h4>
+				<div class="card-body">
+					<table class="table table-sm" id="resultsTable">
+						<thead>
+							<th>Assigned to</th>
+							<th>Date</th>
+							<th>Start time</th>
+							<th>End time</th>
+
+						</thead>
+						<tbody>
+							{{#each appointments}}
+							{{#if this.name}}
+							<tr>
+								<td>{{this.name}}</td>
+								<td>{{formatDateFromUnix this.starttime 'ddd, DD MMM YYYY'}}</td>
+								<td>{{timeFromUnix this.starttime}}</td>
+								<td>{{timeFromUnix this.endtime}}</td>
+							</tr>
+							{{/if}}
+							{{/each}}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

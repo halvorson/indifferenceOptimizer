@@ -22,18 +22,23 @@ module.exports = function(app) {
 				campaignId: req.params.campaign
 			}
 		}).then(function(timeslots) {
-			//console.log(timeslots);
-			//console.log(timeslots.length);
-			var timeslotArray = [];
-			for (var i = 0; i< timeslots.length; i++) {
-				timeslotArray.push(timeslots[i].dataValues);
-			}
-			//console.log(timeslotArray);
-			var hbsObject = {
-				appointments: timeslotArray,
-				campaignId: req.params.campaign
-			};
-			res.render("wizard2", hbsObject);
+			db.campaign.findAll({
+				where: {
+					id: req.params.campaign
+				}
+			}).then(function(campaigns) {
+				var timeslotArray = [];
+				for (var i = 0; i< timeslots.length; i++) {
+					timeslotArray.push(timeslots[i].dataValues);
+				}
+				//console.log(timeslotArray);
+				var hbsObject = {
+					appointments: timeslotArray,
+					campaignId: req.params.campaign,
+					campaign: campaigns[0]
+				};
+				res.render("wizard2", hbsObject);
+			});
 		});
 	});
 
@@ -63,12 +68,77 @@ module.exports = function(app) {
 		});
 	});
 
+	app.get("/optimize/:campaign", function(req, res) {
+		db.campaign.findAll({
+			where: {
+				id: req.params.campaign
+			}
+		}).then(function(campaigns) {
+			db.preference.aggregate('userId', 'count', 
+				{ distinct: true ,
+					where: {
+						campaignId: req.params.campaign
+					}
+				}).then(function(count) {
+					var hbsObject = {
+						campaignId: req.params.campaign,
+						campaign: campaigns[0],
+						usersSubmitted: count
+					};
+					res.render("optimize", hbsObject);
+				});
+			});
+	});
+
+	app.get("/results/:campaign", function(req, res) {
+		db.timeslot.findAll({
+			where: {
+				campaignId: req.params.campaign
+			}
+		}).then(function(timeslots) {
+			db.campaign.findAll({
+				where: {
+					id: req.params.campaign
+				}
+			}).then(function(campaigns) {
+				var timeslotAssignees = [];
+				for (var i = 0; i< timeslots.length; i++) {
+					var assignee = timeslots[i].dataValues.assigneeId;
+					if(assignee) {
+						timeslotAssignees.push(assignee);
+					}
+				}
+				db.user.findAll({
+					where: {
+						id: {$in: timeslotAssignees}
+					}
+				}).then(function(users) {
 
 
-	app.post("/api/todos", function(req, res) {
-		db.todo.create(req.body)
-		.then(function(results) {
-			res.json(results)
+					var timeslotArray = [];
+					for (var i = 0; i< timeslots.length; i++) {
+						var timeslotData = timeslots[i].dataValues
+						var assignee = timeslotData['assigneeId'];
+						if (assignee) {
+							for (var j = 0; j<users.length; j++) {
+								if (users[j].id === assignee) {
+									timeslotData.name = users[j].name;
+									timeslotData.email = users[j].email;
+									break;
+								}
+							}
+						}
+						timeslotArray.push(timeslotData);
+					}
+					var hbsObject = {
+						appointments: timeslotArray,
+						campaignId: req.params.campaign,
+						campaign: campaigns[0]
+					};
+					console.log(hbsObject);
+					res.render("results", hbsObject);
+				});
+			});
 		});
 	});
 }

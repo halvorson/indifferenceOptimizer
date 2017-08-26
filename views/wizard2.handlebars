@@ -1,18 +1,21 @@
 <div class="container">
+	
+	{{#if campaign.hasLaunched}}
 
-	<div class="jumbotron">
-		<h1 class="text-center"><span class="glyphicon glyphicon-fire"></span>Indifference Optimizer</h1>
-		
-		<div class="text-center">
-			<a href="/calendar"><button type="button" class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-list-alt"></span> Calendar</button></a>
-			<a href="/"><button type="button" class="btn btn-lg btn-danger">Home</button></a>
-			<a href="/wizard"><button type="button" class="btn btn-lg btn-info">Wizard</button></a>
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="card">
+				<h4 class="card-header card-danger" role="tab" id="headingThree">
+					Error: No take backs!
+				</h4>
+				<div class="card-body collapse show" id="collapseThree" role="tabpanel" aria-labelledby="headingThree">
+					Sorry, but this campaign is already out the door. If you want to enter your preferences, <a href="/campaign/{{campaignId}}">click here</a>
+				</div>
+			</div>
 		</div>
-
 	</div>
 
-	{{!-- Add if campaign already launched --}}
-	{{!-- Add if campaign not found (no appointments) --}}
+	{{else if appointments.length}}
 
 	<div class="row">
 		<div class="col-sm-12">
@@ -47,6 +50,12 @@
 								</div>
 							</div>
 							<small id="emailHelp" class="form-text text-muted">Should be after submission deadline and before first appointment</small>
+						</div>
+						<div class="form-check">
+							<label class="form-check-label text-muted future-features">
+								<input type="checkbox" id="requireChoice" class="form-check-input" disabled>
+								Force assign everyone?
+							</label>
 						</div>
 						<div class="form-check">
 							<label class="form-check-label text-muted future-features">
@@ -108,6 +117,24 @@
 			</div>
 		</div>
 	</div>
+	
+	{{else}}
+
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="card">
+				<h4 class="card-header card-danger" role="tab" id="headingThree">
+					Error: Cannot find campaign!
+				</h4>
+				<div class="card-body collapse show" id="collapseThree" role="tabpanel" aria-labelledby="headingThree">
+					Did you mistype? We can't seem to find your campaign. If you don't mind recreating it, <a href="/wizard">click here</a>.
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{{/if}}
+
 </div>
 
 {{!-- Create modal for confirmation --}}

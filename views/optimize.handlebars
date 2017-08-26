@@ -1,0 +1,63 @@
+<div class="container">
+	{{#if usersSubmitted}}
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="card">
+				<h4 class="card-header card-primary card-inverse" role="tab">
+					Ready to run!
+				</h4>
+				<div class="card-body text-center">
+					
+					<button class="btn btn-success btn-lg" id="optimizeCampaignButton" onclick="optimizeCampaign(event);" data-campaign-id={{campaignId}}>Launch!</button>
+					<br>
+					{{usersSubmitted}} users have filled out the form so far. 
+					<br>
+					If you're still waiting on people, please send them this link: <a href="/campaign/{{campaignId}}">/campaign/{{campaignId}}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{{else if campaign.hasLaunched}}
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="card">
+				<h4 class="card-header card-danger">
+					Error: No respondants!
+				</h4>
+				<div class="card-body">
+					Nobody has filled out the form yet! Please send them this link: <a href="/campaign/{{campaignId}}">/campaign/{{campaignId}}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{{else if campaign.length}}
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="card">
+				<h4 class="card-header card-danger">
+					Error: This campaign needs to be launched!
+				</h4>
+				<div class="card-body">
+					This  <a href="/wizard/{{campaignId}}">click here</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{{else}}
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="card">
+				<h4 class="card-header card-danger">
+					Error: This campaign doesn't exist!
+				</h4>
+				<div class="card-body">
+					Sorry, we can't find this campaign. If you want to create a new one,<a href="/wizard/">click here</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	{{/if}}
+</div>

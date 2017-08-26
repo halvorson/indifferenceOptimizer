@@ -28,6 +28,12 @@ $('#draftTime').timepicker({
 	},
 });
 
+$('#goToCampaign').submit(function( e ) {
+	//console.log($(this).data-appointment-id);
+	e.preventDefault();
+	window.location.href = "/campaign/" + $('#campaignId').val().trim();
+});
+
 //Wizard 1 scripts
 
 function submitAppointments(e) {
@@ -81,6 +87,7 @@ function launchCampaign(e) {
 	campaign.name = $("#campaignName").val().trim();
 	campaign.draftDay = $("#draftDay").val().trim();
 	campaign.draftTime = $("#draftTime").val().trim();
+	campaign.mustBeAssigned = $("#mustBeAssigned").attr('checked');
 
 	var submissionObject = {};
 	submissionObject.user = user;
@@ -174,4 +181,24 @@ function submitPrefs(event) {
 
 function validatePrefs(prefsObj) {
 	return true;
+}
+
+//Optimize page
+function optimizeCampaign(e) {
+	e.preventDefault();
+	var campaignId = $("#optimizeCampaignButton").attr('data-campaign-id');
+	console.log(campaignId);
+	$.ajax({
+		type: "POST",
+		url: "/api/optimize/"+campaignId,
+		data: JSON.stringify({campaignId: campaignId}),
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function(data){
+			console.log(data);
+		},
+		failure: function(errMsg) {
+			alert(errMsg);
+		}
+	});
 }

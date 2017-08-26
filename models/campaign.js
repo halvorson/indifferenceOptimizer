@@ -17,6 +17,10 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.BOOLEAN,
 			defaultValue: true
 		},
+		hasRan: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: true
+		},
 		authRequired: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
@@ -28,6 +32,13 @@ module.exports = function(sequelize, DataTypes) {
 		requiredDomain: {
 			type: DataTypes.STRING
 		},
+		mustBeAssigned: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false
+		},
+		unassignedUsers: {
+			type: DataTypes.STRING,
+		}
 	});
 	return Campaign;
 }

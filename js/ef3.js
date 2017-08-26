@@ -1,9 +1,9 @@
-var ef = {};
+var ef3 = {};
 
 var testObjects = [['a','b','c','d','e','f','g'],
 {
 	1:{1:['a','b','c']},
-	2:{1:['a','b','c'],2:['c']},
+	2:{1:['a','b','c'],2:['d']},
 	3:{1:['a']},
 	4:{1:['b']},
 	5:{1:['a']},
@@ -12,7 +12,7 @@ var testObjects = [['a','b','c','d','e','f','g'],
 }, true];
 
 
-ef.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssigned) {
+ef3.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssigned) {
 
 	var victoryConditions = false;
 	var assignmentObject = {};
@@ -27,6 +27,12 @@ ef.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssig
 	//Preemptive nuke, because why not
 	preferenceObject = emptyPopper(preferenceObject);
 	var userArr = Object.keys(preferenceObject);
+
+	//Here's the big shuffle; this assigns draft order for the rest of the time. Comment out to debug.
+	userArr = shuffle(userArr);
+	var userArrOrder = userArr.slice(0);
+	console.log("Draft order: " + userArrOrder);
+	console.log(preferenceObject);
 
 	if(typeof mustBeAssigned == 'boolean' && mustBeAssigned) {
 		if(userArr.length > appointmentArray.length) {
@@ -63,7 +69,7 @@ ef.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssig
 		i++;
 
 		// console.log("People in queue: " + reserved);
-		// console.log("After # of slots: " + promisedSlots.length + ", slots are " + promisedSlots);
+		// console.log("# of slots awaited: " + promisedSlots.length + ", slots are " + promisedSlots);
 
 		//If we have promised the same number of people waiting as slots they are waiting for, begin assigning process
 		if((reserved === promisedSlots.length && reserved > 0) || reserved === userArr.length) {
@@ -92,8 +98,13 @@ ef.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssig
 			}
 			preferenceObject = emptyPopper(preferenceObject);
 
-			//I lose the 'real' userArr somewhere in the depthFirst, so just redefining it
-			userArr = Object.keys(preferenceObject);
+			//I lose the 'real' userArr somewhere in the depthFirst, so just redefining it based on original order
+			userArr = [];
+			for (var l = 0; l < userArrOrder.length; l++) {
+				if (preferenceObject.hasOwnProperty(userArrOrder[l])) {
+					userArr.push(userArrOrder[l]);
+				}
+			}
 
 			resetAfterAssigning();
 		}
@@ -142,7 +153,7 @@ ef.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssig
 			}
 			unassignedPrefs[unassignedUsers[l]] = unassignedUserObj;
 		}
-		var missingAssignmentObj = ef.assignAppointments(appointmentArray, unassignedPrefs).assignmentObject;
+		var missingAssignmentObj = ef3.assignAppointments(appointmentArray, unassignedPrefs).assignmentObject;
 		//
 		//console.log(missingAssignmentObj);
 
@@ -184,8 +195,12 @@ ef.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssig
 				//console.log(chosenAppointment);
 				//console.log(promisedPrefs[key]);
 
+				// console.log("Assigning singular preference user " + key + " to appointment " + chosenAppointment);
+
 				//Removes winner from preference object (and userArr)
-				delete promisedPrefs[promisedPrefs[key]];
+				delete preferenceObject[key];
+				delete promisedPrefs[key];
+
 				//Nukes all references to that appointment
 				promisedPrefs = preferencePopper(promisedPrefs, chosenAppointment); 
 				//Cleans user array to remove removed users
@@ -207,8 +222,8 @@ ef.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssig
 
 		// If we've assigned everybody, we're done!
 		if(Object.keys(promisedPrefs).length === 0 ) {
-			console.log("Found a local solution:")
-			console.log(assignmentObject);
+			// console.log("Found a local solution:")
+			// console.log(assignmentObject);
 			return true;
 		}
 
@@ -234,6 +249,7 @@ ef.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssig
 
 				//Removes winner from preference object (and userArr)
 				delete promisedPrefs[userArr[0]];
+				delete preferenceObject[userArr[0]];
 				//Nukes all references to that appointment
 				promisedPrefs = preferencePopper(promisedPrefs, chosenAppointment); 
 				//Cleans user array to remove removed users
@@ -258,6 +274,24 @@ ef.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssig
 	}
 }
 
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
 
 function userCleaner(userArr, prefObj) {
 	for (var j= 0; j<userArr.length; j++) {
@@ -334,7 +368,7 @@ function winnerPopper(prefObj, userArr, index) {
 	return obj;
 }
 
-console.log(ef.assignAppointments(testObjects[0], testObjects[1], testObjects[2]));
+console.log(ef3.assignAppointments(testObjects[0], testObjects[1], testObjects[2]));
 
 // console.log(testObjects[1]);
 // console.log(emptyPopper(appointmentPopper(testObjects[1],'c')));
@@ -342,3 +376,5 @@ console.log(ef.assignAppointments(testObjects[0], testObjects[1], testObjects[2]
 //console.log(getCountOfLowestRank(testObjects[1][7]));
 
 //appointmentPopper(testObjects[1],'c');
+
+module.exports = ef3;
