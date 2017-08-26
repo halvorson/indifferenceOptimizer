@@ -33,13 +33,4 @@ Object.keys(db).forEach(function(modelName) {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.preference.belongsTo(db.user);
-db.user.hasMany(db.preference);
-db.preference.belongsTo(db.campaign);
-db.campaign.hasMany(db.preference);
-db.campaign.hasMany(db.timeslot);
-db.timeslot.belongsTo(db.campaign);
-db.preference.belongsTo(db.timeslot);
-db.timeslot.hasMany(db.preference);
-
 module.exports = db;
