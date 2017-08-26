@@ -1,30 +1,40 @@
 var ef = {};
 
-var testObjects = [['a','b','c','d'],
+var testObjects = [['a','b','c','d','e','f','g'],
 {
 	1:{1:['a','b','c']},
 	2:{1:['a','b','c'],2:['c']},
-	3:{1:['a','b']},
+	3:{1:['a']},
 	4:{1:['b']},
 	5:{1:['a']},
 	6:{1:['d']},
-	7:{1:[]}
-}];
+	7:{1:['d']}
+}, true];
 
 
-ef.assignAppointments = function(appointmentArray, preferenceObject) {
+ef.assignAppointments = function(appointmentArray, preferenceObject, mustBeAssigned) {
+
 	var victoryConditions = false;
 	var assignmentObject = {};
-	var empty = appointmentArray.length;
 	var reserved = 0;
+	var i = 0;
+	var promisedSlots = [];
+
+	//Needed to figure out who was unassigned (if all users are assigned and there are empty appointment slots, they'll remain in appointmentArray)
+	var unassignedUsers = [];
+	var ssPrefObj = JSON.parse(JSON.stringify(preferenceObject));
 
 	//Preemptive nuke, because why not
 	preferenceObject = emptyPopper(preferenceObject);
 	var userArr = Object.keys(preferenceObject);
-	var i = 0;
-	var promisedSlots = [];
+
+	if(typeof mustBeAssigned == 'boolean' && mustBeAssigned) {
+		if(userArr.length > appointmentArray.length) {
+			return {error: "If all people must be assigned, there must be more appointments than people"};
+		}
+	}
 	//Two victory conditions: user module is empty, or appointmentArray is empty
-	while (empty > reserved && userArr.length>0 && appointmentArray.length>0) {
+	while (userArr.length>0 && appointmentArray.length>0) {
 		
 
 
@@ -37,71 +47,58 @@ ef.assignAppointments = function(appointmentArray, preferenceObject) {
 		// console.log(preferenceObject[userArr[i]]);
 
 		//If they have a specific preference that's open, assign person to appointment
-		if(lowestRankLength === 1) {
-			var chosenAppointment = preferenceObject[userArr[i]][lowestRank][0]
-			console.log("_______________________________________")
-			console.log("Assigning " + chosenAppointment + " to " + userArr[i]);
-			
-			
-			//console.log("Assigned user: " + userArr[i] + " to appointment: " + chosenAppointment);
-			assignmentObject[chosenAppointment] = userArr[i];
-			empty--;
-
-			//Removes winner from preference object (and userArr)
-			delete preferenceObject[userArr[i]];
-			//Nukes all references to that appointment
-			preferenceObject = preferencePopper(preferenceObject, chosenAppointment); 
-			//Removes empty top priorities from object if need be
-			preferenceObject = emptyPopper(preferenceObject);
-			//Cleans user array to remove users with no remaining priorities 
-			userArr = userCleaner(userArr,preferenceObject);
-			//Removes appointment from list
-			appointmentArray = appointmentPopper(appointmentArray, chosenAppointment);
-
-			resetAfterAssigning();
-		} else {
-			//Build array of promised slots; if length of array of potentially assigned slots = reserved, run depthFirstAssigner
-			var prefsInLowestRank = preferenceObject[userArr[i]][lowestRank];
-			// console.log(userArr[i] + " wants one of " + prefsInLowestRank);
-			for(var j = 0; j< lowestRankLength; j++) {
-				var iterSlot = prefsInLowestRank[j];
-				// console.log(iterSlot);
-				if(!promisedSlots.includes(iterSlot)) {
-					// console.log(iterSlot + " is net new. Adding");
-					promisedSlots.push(iterSlot);
-				}
-			}
-			reserved++; 
-			i++;
-			if(reserved === promisedSlots.length) {
-				console.log("_______________________________________");
-				console.log("Assigning some indifferent people:");
-				var promisedPrefs = {};
-				for (var j = 0; j<reserved; j++) {
-					promisedPrefs[userArr[j]] = {};
-					promisedPrefs[userArr[j]][1] = preferenceObject[userArr[j]][lowestNonEmptyRank(preferenceObject[userArr[j]])];
-				}
-
-				depthFirstAssigner();
-
-				//A little cleanup; nukes all assigned rooms from users preferences, then cleans user array
-				//Note: no need to clean the appointmentArray, as that is done in the depthFirstAssigner
-				for (var k in assignmentObject){
-					if (assignmentObject.hasOwnProperty(k)) {
-						preferenceObject = preferencePopper(preferenceObject, k); 
-					}
-				}
-
-				//I lose userArr somewhere in the depthFirst, so just redefining it
-				preferenceObject = emptyPopper(preferenceObject);
-				userArr = Object.keys(preferenceObject);
-
-				resetAfterAssigning();
+		
+		//Build array of promised slots; if length of array of potentially assigned slots = reserved, run depthFirstAssigner
+		var prefsInLowestRank = preferenceObject[userArr[i]][lowestRank];
+		// console.log(userArr[i] + " wants one of " + prefsInLowestRank);
+		for(var j = 0; j< lowestRankLength; j++) {
+			var iterSlot = prefsInLowestRank[j];
+			// console.log(iterSlot);
+			if(!promisedSlots.includes(iterSlot)) {
+				// console.log(iterSlot + " is net new. Adding");
+				promisedSlots.push(iterSlot);
 			}
 		}
+		reserved++; 
+		i++;
 
-		console.log("People in queue: " + reserved);
-		console.log("After # of slots: " + promisedSlots.length + ", slots are " + promisedSlots);
+		// console.log("People in queue: " + reserved);
+		// console.log("After # of slots: " + promisedSlots.length + ", slots are " + promisedSlots);
+
+		//If we have promised the same number of people waiting as slots they are waiting for, begin assigning process
+		if((reserved === promisedSlots.length && reserved > 0) || reserved === userArr.length) {
+			// console.log("_______________________________________");
+			// console.log("Queue full. Assigning...");
+
+			//Create object with just the people who were promised slots
+			var promisedPrefs = {};
+			for (var j = 0; j<reserved; j++) {
+				promisedPrefs[userArr[j]] = {};
+				promisedPrefs[userArr[j]][1] = preferenceObject[userArr[j]][lowestNonEmptyRank(preferenceObject[userArr[j]])];
+			}
+
+			//Assigns all singles so they can skip the tree later
+			assignSingles();
+
+			//Assigns all remaining users
+			depthFirstAssigner();
+
+			//A little cleanup; nukes all assigned rooms from users preferences, then cleans user array
+			//Note: no need to clean the appointmentArray, as that is done in the depthFirstAssigner
+			for (var k in assignmentObject){
+				if (assignmentObject.hasOwnProperty(k)) {
+					preferenceObject = preferencePopper(preferenceObject, k); 
+				}
+			}
+			preferenceObject = emptyPopper(preferenceObject);
+
+			//I lose the 'real' userArr somewhere in the depthFirst, so just redefining it
+			userArr = Object.keys(preferenceObject);
+
+			resetAfterAssigning();
+		}
+
+
 
 		//console.log(assignmentObject);
 
@@ -116,17 +113,87 @@ ef.assignAppointments = function(appointmentArray, preferenceObject) {
 		// depthFirstAssigner();
 	}
 	victoryConditions = true;
-	console.log(assignmentObject);
+
+	//Find people who were not assigned; add them to 
+	for (var key in ssPrefObj) {
+		if (!ssPrefObj.hasOwnProperty(key)) continue;
+		var found = false;
+		for (var assKey in assignmentObject) {
+			if (!assignmentObject.hasOwnProperty(assKey)) continue;
+			if(assignmentObject[assKey] === key) {
+				found = true;
+				break;
+			}
+		}
+		if(!found) {
+			unassignedUsers.push(key);
+		}
+	}
+
+	//If people must be assigned (and there are unassigned people), create new elements with unassigned users and remaining appointments, then rerun the program
+	if(mustBeAssigned && unassignedUsers.length>0) {
+		var unassignedPrefs = {};
+		for (var l = 0; l<unassignedUsers.length; l++) {
+			var unassignedUserObj = {
+				'1': []
+			};
+			for (var m = 0; m<appointmentArray.length; m++) {
+				unassignedUserObj[1].push(appointmentArray[m]);
+			}
+			unassignedPrefs[unassignedUsers[l]] = unassignedUserObj;
+		}
+		var missingAssignmentObj = ef.assignAppointments(appointmentArray, unassignedPrefs).assignmentObject;
+		//
+		//console.log(missingAssignmentObj);
+
+		//Add newly assigned users to assignmentObject and blank out unassigned users
+		for (var key in missingAssignmentObj) {
+			if (!missingAssignmentObj.hasOwnProperty(key)) continue;
+			assignmentObject[key] = missingAssignmentObj[key];
+			unassignedUsers = [];
+		}
+	}
+
+	// console.log(assignmentObject);
+	// console.log(unassignedUsers);
+
+	var returnObj = {};
+	returnObj.assignmentObject = assignmentObject;
+	returnObj.unassignedUsers = unassignedUsers;
+
+	return returnObj;
 
 	function resetAfterAssigning() {
 		i = 0;
 		reserved = 0;
 		promisedSlots = [];
-		reportRemaining();
+		//reportRemaining();
 	}
 
 	function reportRemaining() {
 		console.log("Remaining: " + userArr.length + " users, " + appointmentArray.length + " appointments");
+	}
+
+	function assignSingles() {
+		for (var key in promisedPrefs) {
+			if (!promisedPrefs.hasOwnProperty(key)) continue;
+			if (promisedPrefs[key][1].length === 1) {
+				chosenAppointment = promisedPrefs[key][1][0];
+
+				assignmentObject[chosenAppointment] = key;
+				//console.log(chosenAppointment);
+				//console.log(promisedPrefs[key]);
+
+				//Removes winner from preference object (and userArr)
+				delete promisedPrefs[promisedPrefs[key]];
+				//Nukes all references to that appointment
+				promisedPrefs = preferencePopper(promisedPrefs, chosenAppointment); 
+				//Cleans user array to remove removed users
+				userArr = userCleaner(userArr,promisedPrefs);
+				//Removes appointment from list
+				appointmentArray = appointmentPopper(appointmentArray, chosenAppointment);
+			}
+		}
 	}
 
 	//This needs to be nested because it's modifying these variables
@@ -158,12 +225,11 @@ ef.assignAppointments = function(appointmentArray, preferenceObject) {
 			
 			var chosenAppointment = ssPromisedPrefs[ssUserArr[0]][1][k];
 
-			console.log("Trying " + ssUserArr[0] + " in " + chosenAppointment);
+			//console.log("Trying assigning user " + ssUserArr[0] + " to appointment " + chosenAppointment);
 
 			if(chosenAppointment) {
 
-				//Choose first option, assign it, do cleanup as before
-				
+				//Choose first option (if exists), assign it, do cleanup as before				
 				assignmentObject[chosenAppointment] = userArr[0];
 
 				//Removes winner from preference object (and userArr)
@@ -186,7 +252,7 @@ ef.assignAppointments = function(appointmentArray, preferenceObject) {
 			}
 		}
 
-		console.log("Rewinding from " + userArr[0]);
+		//console.log("Rewinding from " + userArr[0]);
 		//console.log(promisedPrefs);
 		return false;
 	}
@@ -268,7 +334,7 @@ function winnerPopper(prefObj, userArr, index) {
 	return obj;
 }
 
-ef.assignAppointments(testObjects[0], testObjects[1]);
+console.log(ef.assignAppointments(testObjects[0], testObjects[1], testObjects[2]));
 
 // console.log(testObjects[1]);
 // console.log(emptyPopper(appointmentPopper(testObjects[1],'c')));
