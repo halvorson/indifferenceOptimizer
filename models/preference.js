@@ -7,8 +7,8 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		userId: {
 			type: DataTypes.INTEGER,
+			allowNull: false,
 			validate: {
-				allowNull: false,
 				notEmpty: true
 			}
 		},
@@ -17,15 +17,15 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		timeslotId: {
 			type: DataTypes.INTEGER,
+			allowNull: false,
 			validate: {
-				allowNull: false,
 				notEmpty: true
 			}
 		},
 		priority: {
 			type: DataTypes.INTEGER,
+			allowNull: false,
 			validate: {
-				allowNull: false,
 				notEmpty: true
 			}
 		},

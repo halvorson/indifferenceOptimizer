@@ -7,29 +7,29 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		campaignId: {
 			type: DataTypes.STRING,
+			allowNull: false,
 			validate: {
-				allowNull: false,
 				notEmpty: true
 			}
 		},
 		starttime: {
 			type: DataTypes.INTEGER,
+			allowNull: false,
 			validate: {
-				allowNull: false,
 				notEmpty: true
 			}
 		},
 		endtime: {
 			type: DataTypes.INTEGER,
+			allowNull: false,
 			validate: {
-				allowNull: false,
 				notEmpty: true
 			}
 		},
 		duration: {
 			type: DataTypes.INTEGER,
+			allowNull: false,
 			validate: {
-				allowNull: false,
 				notEmpty: true
 			}
 		},
