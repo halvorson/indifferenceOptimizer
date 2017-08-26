@@ -42,6 +42,4 @@ db.Sequelize = Sequelize;
 // db.preference.belongsTo(db.timeslot);
 // db.timeslot.hasMany(db.preference);
 
-console.log(process.env[config.use_env_variable]);
-
 module.exports = db;

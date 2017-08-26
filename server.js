@@ -49,6 +49,15 @@ app.set("view engine", "handlebars");
 require("./controllers/ioController.js")(app);
 require("./controllers/apiController.js")(app);
 
+db.sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
 db.sequelize.sync().then(function() {
 	app.listen(port, function() {
 		console.log("App listening on PORT " + port);

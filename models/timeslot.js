@@ -21,8 +21,15 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
 		},
-		assigneeId: {
+		userId: {
 			type: DataTypes.INTEGER
+		}
+	}, {
+		classMethods: {
+			associate: function(models) {
+				timeslot.hasOne(model.campaign),
+				timeslot.hasOne(model.user)
+			}
 		}
 	});
 	return Timeslot;

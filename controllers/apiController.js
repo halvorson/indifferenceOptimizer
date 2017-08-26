@@ -97,13 +97,13 @@ module.exports = function(app) {
 		.spread((user, created) => {
 			//logSequelize(user);
 			var campaign = req.body.campaign;
-			campaign.ownerId = user.id;
+			campaign.userId = user.id;
 			//Add datetime
 			campaign.draftDateTime = moment(campaign.draftDay + " " + campaign.draftTime, "MM/DD/YYYY hh:mm a").unix();
 
 			db.campaign.findOrCreate({where: {id: campaign.campaignId}, defaults: {
 				name: campaign.name,
-				ownerId: campaign.ownerId,
+				userId: campaign.userId,
 				draftDateTime: campaign.draftDateTime
 			}})
 			.spread((campaign, created) => {
@@ -235,7 +235,7 @@ module.exports = function(app) {
 			db.timeslot.update(
 				{ 
 					assigned: true,
-					assigneeId: Number(assObj[timeslotId])
+					userId: Number(assObj[timeslotId])
 				}, 
 				{ 
 					where: { id: Number(timeslotId) }

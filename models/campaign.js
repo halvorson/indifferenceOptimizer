@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
 		name: {
 			type: DataTypes.STRING
 		},
-		ownerId: {
+		userId: {
 			type: DataTypes.INTEGER
 		},
 		draftDateTime: {
@@ -38,6 +38,12 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		unassignedUsers: {
 			type: DataTypes.STRING,
+		}
+	}, {
+		classMethods: {
+			associate: function(models) {
+				campaign.hasOne(models.user)
+			}
 		}
 	});
 	return Campaign;

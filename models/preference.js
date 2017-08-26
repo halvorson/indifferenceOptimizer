@@ -21,6 +21,14 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
 		}
+	}, {
+		classMethods: {
+			associate: function(models) {
+				preference.hasOne(models.user),
+				preference.hasOne(models.campaign),
+				preference.hasOne(models.timeslot)
+			}
+		}
 	});
 	return Preference;
 }

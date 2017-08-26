@@ -103,7 +103,7 @@ module.exports = function(app) {
 			}).then(function(campaigns) {
 				var timeslotAssignees = [];
 				for (var i = 0; i< timeslots.length; i++) {
-					var assignee = timeslots[i].dataValues.assigneeId;
+					var assignee = timeslots[i].dataValues.userId;
 					if(assignee) {
 						timeslotAssignees.push(assignee);
 					}
@@ -118,7 +118,7 @@ module.exports = function(app) {
 					var timeslotArray = [];
 					for (var i = 0; i< timeslots.length; i++) {
 						var timeslotData = timeslots[i].dataValues
-						var assignee = timeslotData['assigneeId'];
+						var assignee = timeslotData['userId'];
 						if (assignee) {
 							for (var j = 0; j<users.length; j++) {
 								if (users[j].id === assignee) {
