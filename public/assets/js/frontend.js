@@ -10,6 +10,10 @@ $('#goToCampaign').submit(function( e ) {
 	window.location.href = "/campaign/" + $('#campaignId').val().trim();
 });
 
+function popSuccessModal() {
+	$('#successModal').modal('show')
+};
+
 
 //Shared Wizard scripts
 
@@ -97,6 +101,9 @@ function launchCampaign(e) {
 	if(validateWiz2(submissionObject)) {
 		//console.log(submissionObject);
 		$.post("/api/launch", submissionObject, function postSuccess(data) {
+			if(data.success) {
+				popSuccessModal();
+			}
 			console.log(data);
 		}, "json");
 	}
@@ -170,6 +177,9 @@ function submitPrefs(event) {
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",
 			success: function(data){
+				if(data.success) {
+					popSuccessModal();
+				}
 				console.log(data);
 			},
 			failure: function(errMsg) {
@@ -211,6 +221,9 @@ function optimizeCampaign(e) {
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		success: function(data){
+			if(data.success) {
+				popSuccessModal();
+			}
 			console.log(data);
 		},
 		failure: function(errMsg) {
