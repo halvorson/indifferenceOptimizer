@@ -203,7 +203,11 @@ function validatePrefs(prefsObj) {
 		$('#email').tooltip({title: "Try harder", html: true}).tooltip('show');
 		return false;
 	}
-
+	var attemptedName = $("#userName").val().trim();
+	if(!attemptedEmail) {
+		$('#userName').tooltip({title: "I need your name", html: true}).tooltip('show');
+		return false;
+	}
 
 	return true;
 }
