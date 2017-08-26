@@ -6,16 +6,28 @@ module.exports = function(sequelize, DataTypes) {
 			primaryKey: true,
 		},
 		userId: {
-			type: DataTypes.INTEGER
+			type: DataTypes.INTEGER,
+			validate: {
+				allowNull: false,
+				notEmpty: true
+			}
 		},
 		campaignId: {
 			type: DataTypes.STRING
 		},
 		timeslotId: {
-			type: DataTypes.INTEGER
+			type: DataTypes.INTEGER,
+			validate: {
+				allowNull: false,
+				notEmpty: true
+			}
 		},
 		priority: {
-			type: DataTypes.INTEGER
+			type: DataTypes.INTEGER,
+			validate: {
+				allowNull: false,
+				notEmpty: true
+			}
 		},
 		assigned: {
 			type: DataTypes.BOOLEAN,

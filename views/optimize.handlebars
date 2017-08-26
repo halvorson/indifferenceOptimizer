@@ -1,5 +1,22 @@
 <div class="container">
-	{{#if usersSubmitted}}
+
+	{{#if campaign.hasRan}}
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="card">
+				<h4 class="card-header card-danger">
+					Button masher!
+				</h4>
+				<div class="card-body">
+					Whoa there, easy does it. We've already run that campaign. <a href="/results/{{campaignId}}">Click here</a> to view the results.
+					<br>
+					<small>Spoiler: everybody's a winner!</small>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{{else if usersSubmitted}}
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="card">
@@ -23,10 +40,10 @@
 		<div class="col-sm-12">
 			<div class="card">
 				<h4 class="card-header card-danger">
-					Error: No respondants!
+					Nobody loves us!
 				</h4>
 				<div class="card-body">
-					Nobody has filled out the form yet! Please send them this link: <a href="/campaign/{{campaignId}}">/campaign/{{campaignId}}</a>
+					Nobody has filled out the form yet! Remind them via this link: <a href="/campaign/{{campaignId}}">/campaign/{{campaignId}}</a>
 				</div>
 			</div>
 		</div>
@@ -37,10 +54,10 @@
 		<div class="col-sm-12">
 			<div class="card">
 				<h4 class="card-header card-danger">
-					Error: This campaign needs to be launched!
+					Slowpoke!
 				</h4>
 				<div class="card-body">
-					This  <a href="/wizard/{{campaignId}}">click here</a>
+					This campaign needs to launch before anybody can see it. Go <a href="/wizard/{{campaignId}}">here</a> to finish some details and launch it.
 				</div>
 			</div>
 		</div>
@@ -51,10 +68,10 @@
 		<div class="col-sm-12">
 			<div class="card">
 				<h4 class="card-header card-danger">
-					Error: This campaign doesn't exist!
+					Lost in space!
 				</h4>
 				<div class="card-body">
-					Sorry, we can't find this campaign. If you want to create a new one,<a href="/wizard/">click here</a>
+					Sorry, we can't find this campaign. If you want to create a new one, <a href="/wizard/">click here</a>
 				</div>
 			</div>
 		</div>

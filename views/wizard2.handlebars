@@ -6,7 +6,7 @@
 		<div class="col-sm-12">
 			<div class="card">
 				<h4 class="card-header card-danger" role="tab" id="headingThree">
-					Error: No take backs!
+					No take backs!
 				</h4>
 				<div class="card-body collapse show" id="collapseThree" role="tabpanel" aria-labelledby="headingThree">
 					Sorry, but this campaign is already out the door. If you want to enter your preferences, <a href="/campaign/{{campaignId}}">click here</a>
@@ -19,7 +19,6 @@
 
 	<div class="row">
 		<div class="col-sm-12">
-			Campaign name: {{campaignId}} 
 			<div class="card">
 				<h4 class="card-header card-primary card-inverse" role="tab" id="headingOne"><a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
 					1. Options
@@ -52,9 +51,9 @@
 							<small id="emailHelp" class="form-text text-muted">Should be after submission deadline and before first appointment</small>
 						</div>
 						<div class="form-check">
-							<label class="form-check-label text-muted future-features">
-								<input type="checkbox" id="requireChoice" class="form-check-input" disabled>
-								Force assign everyone?
+							<label class="form-check-label">
+								<input type="checkbox" id="requireChoice" class="form-check-input">
+								Force assignments if unassigned?
 							</label>
 						</div>
 						<div class="form-check">
@@ -95,14 +94,14 @@
 								</form></td>
 							</tr>
 							{{/each}}
-							<tr>
+							{{!-- <tr>
 								<form class="addForm">
 									<td><input class="table-time-input" data-provide="datepicker" id="startdate" placeholder="startdate" type="text" required></td>
 									<td><input class="table-time-input" data-provide="timepicker" id="starttime" placeholder="starttime" type="text" required></td>
 									<td><input class="table-time-input" data-provide="timepicker" id="endtime" placeholder="endTime" type="text" required></td>
 									<td><button class ="btn btn-sm btn-primary add_new_button" type="submit">Add new</button></td>
 								</form>
-							</tr>
+							</tr> --}}
 						</tbody>
 					</table>
 				</div>
@@ -124,7 +123,7 @@
 		<div class="col-sm-12">
 			<div class="card">
 				<h4 class="card-header card-danger" role="tab" id="headingThree">
-					Error: Cannot find campaign!
+					Gone fishing!
 				</h4>
 				<div class="card-body collapse show" id="collapseThree" role="tabpanel" aria-labelledby="headingThree">
 					Did you mistype? We can't seem to find your campaign. If you don't mind recreating it, <a href="/wizard">click here</a>.

@@ -4,6 +4,13 @@ $(document).ready(function(){
 	$('[data-toggle="tooltip"]').tooltip(); 
 });
 
+$('#goToCampaign').submit(function( e ) {
+	//console.log($(this).data-appointment-id);
+	e.preventDefault();
+	window.location.href = "/campaign/" + $('#campaignId').val().trim();
+});
+
+
 //Shared Wizard scripts
 
 $('#eventDay,#draftDay').datepicker({
@@ -26,12 +33,6 @@ $('#draftTime').timepicker({
 		up: 'fa fa-chevron-up',
 		down: 'fa fa-chevron-down'
 	},
-});
-
-$('#goToCampaign').submit(function( e ) {
-	//console.log($(this).data-appointment-id);
-	e.preventDefault();
-	window.location.href = "/campaign/" + $('#campaignId').val().trim();
 });
 
 //Wizard 1 scripts
@@ -94,10 +95,9 @@ function launchCampaign(e) {
 	submissionObject.campaign = campaign;
 
 	if(validateWiz2(submissionObject)) {
-		console.log(submissionObject);
+		//console.log(submissionObject);
 		$.post("/api/launch", submissionObject, function postSuccess(data) {
 			console.log(data);
-			alert("Front End success!");
 		}, "json");
 	}
 }
@@ -106,7 +106,7 @@ function validateWiz2() {
 	return true;
 }
 
-//Preference selector scripts
+//Preference page scripts
 
 var highestPreference = 0;
 
@@ -154,7 +154,7 @@ function submitPrefs(event) {
 			apptRanks[apptId] = prefRanking;
 		}
 	}
-	console.log(apptRanks);
+	//console.log(apptRanks);
 	var prefsObj = {};
 	prefsObj.apptRanks = apptRanks;
 	prefsObj.campaignId = $("#submitPrefs").attr('data-campaign-id');
@@ -162,7 +162,7 @@ function submitPrefs(event) {
 	prefsObj.email = $("#email").val().trim();
 
 	if(validatePrefs(prefsObj)) {
-		console.log(prefsObj);
+		//console.log(prefsObj);
 		$.ajax({
 			type: "POST",
 			url: "/api/prefs",
@@ -180,10 +180,26 @@ function submitPrefs(event) {
 }
 
 function validatePrefs(prefsObj) {
+	if(highestPreference === 0) {
+		$('.fa-plus-circle:first').tooltip({title: "You can't be <i>that</i> indifferent", html: true}).tooltip('show');
+		return false;
+	}
+	var re = /.+@.+\..+/i
+	var attemptedEmail = $("#email").val().trim();
+	if(!attemptedEmail) {
+		$('#email').tooltip({title: "At least try", html: true}).tooltip('show');
+		return false;
+	} else if (!re.test(attemptedEmail)) {
+		$('#email').tooltip({title: "Try harder", html: true}).tooltip('show');
+		return false;
+	}
+
+
 	return true;
 }
 
-//Optimize page
+//Optimize page scripts
+
 function optimizeCampaign(e) {
 	e.preventDefault();
 	var campaignId = $("#optimizeCampaignButton").attr('data-campaign-id');

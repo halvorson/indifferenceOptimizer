@@ -135,7 +135,7 @@ module.exports = function(app) {
 						campaignId: req.params.campaign,
 						campaign: campaigns[0]
 					};
-					console.log(hbsObject);
+					//console.log(hbsObject);
 					res.render("results", hbsObject);
 				});
 			});

@@ -1,11 +1,4 @@
-// *********************************************************************************
-// api-routes.js - this file offers a set of routes for displaying and saving data to the db
-// *********************************************************************************
-
-// Dependencies
-// =============================================================
-
-// Requiring our Todo model
+// Requiring our models
 var db = require("../models");
 var moment = require("moment");
 var ef = require("../js/extraFunctions.js");
@@ -14,13 +7,6 @@ var ef3 = require("../js/ef3.js");
 // Routes
 // =============================================================
 module.exports = function(app) {
-
-	app.get("/api/calendar/:calId/appointments", function(req, res) {
-		//console.log(db.Todo);
-		// db.Todo.findAll({}).then(function(results) {
-		//   res.json(results);
-		// });
-	});
 
 	// POST route for adding a new block of calendar slots
 	app.post("/api/calendar", function(req, res) {
@@ -82,11 +68,11 @@ module.exports = function(app) {
 
 	// DELETE route for deleting appointments during setup
 	app.delete("/api/calendar/:calId", function apiDelete(req, res) {
-		console.log("Deleting appointment id: " + req.params.calId);
+		//console.log("Deleting appointment id: " + req.params.calId);
 		db.timeslot.destroy({where:
 			{id:req.params.calId}
 		}).then(() => {
-			console.log("Deleted appointment id: " + req.params.calId);
+			//console.log("Deleted appointment id: " + req.params.calId);
 		});
 	});
 
@@ -107,7 +93,8 @@ module.exports = function(app) {
 				draftDateTime: campaign.draftDateTime
 			}})
 			.spread((campaign, created) => {
-				logSequelize(campaign);
+				//logSequelize(campaign);
+				res.json({success:true});
 			});
 		});
 	});
@@ -116,34 +103,43 @@ module.exports = function(app) {
 		console.log(req.body);
 		db.user.findOrCreate({where: {email: req.body.email, name: req.body.name}})
 		.spread((user, created) => {
-			logSequelize(user);
-			var prefArray = [];
-			var apptRanks = req.body.apptRanks;
-
-			for (var k in apptRanks){
-				if (apptRanks.hasOwnProperty(k)) {
-					var prefObj = {
-						userId: user.id,
-						campaignId: req.body.campaignId,
-						timeslotId: k,
-						priority: apptRanks[k],
-					}
-					prefArray.push(prefObj);
+			db.preference.destroy({
+				where: {
+					campaignId: req.body.campaignId,
+					userId: user.id,
 				}
-			}
+			})
+			.then(() => { 
+				logSequelize(user);
+				var prefArray = [];
+				var apptRanks = req.body.apptRanks;
 
-			db.preference.bulkCreate(prefArray).then(() => { 
-				res.json({message:"I'm done"});
+				for (var k in apptRanks){
+					if (apptRanks.hasOwnProperty(k)) {
+						var prefObj = {
+							userId: user.id,
+							campaignId: req.body.campaignId,
+							timeslotId: k,
+							priority: apptRanks[k],
+						}
+						prefArray.push(prefObj);
+					}
+				}
+
+				db.preference.bulkCreate(prefArray).then(() => { 
+					res.json({success:true});
+				});
 			});
 		});
 	});
 
+
 	// PUT route for updating todos. We can get the updated todo data from req.body
 	app.post("/api/optimize/:campaignId", function(req, res) {
 		db.campaign.findAll({
-					where: {
-						id: req.params.campaignId
-					}
+			where: {
+				id: req.params.campaignId
+			}
 		}).then(function(campaigns) {
 			if(campaigns[0].hasRan) {
 				console.log("Trying to rerun... failing");
@@ -155,9 +151,9 @@ module.exports = function(app) {
 				}
 			}).then(function(preferences) {
 				db.timeslot.findAll({
-			where: {
-				campaignId: req.params.campaignId
-			}
+					where: {
+						campaignId: req.params.campaignId
+					}
 				}).then(function(timeslots) {
 					// logSequelize(timeslots);
 					// logSequelize(preferences);
@@ -222,24 +218,24 @@ module.exports = function(app) {
 		//If 0, update the campaign itself (and end recursion)
 		if(Object.keys(assObj).length===0) {
 			db.campaign.update(
-				{ 
-					hasRan: true,
-					unassignedUsers: unassUsers.join()
-				}, 
-				{ where: { id: campId }} /* where criteria */
+			{ 
+				hasRan: true,
+				unassignedUsers: unassUsers.join()
+			}, 
+			{ where: { id: campId }} /* where criteria */
 			).then(function(response) {
 				res.json({success:true});
 			});
 		} else {
 			var timeslotId = Object.keys(assObj)[0]; 
 			db.timeslot.update(
-				{ 
-					assigned: true,
-					userId: Number(assObj[timeslotId])
-				}, 
-				{ 
-					where: { id: Number(timeslotId) }
-				})
+			{ 
+				assigned: true,
+				userId: Number(assObj[timeslotId])
+			}, 
+			{ 
+				where: { id: Number(timeslotId) }
+			})
 			.then(function(response) {
 				delete assObj[timeslotId];
 				recursiveUpdate(assObj, unassUsers, res, campId);

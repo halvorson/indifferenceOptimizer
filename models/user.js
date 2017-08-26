@@ -9,10 +9,17 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING
 		},
 		name: {
-			type: DataTypes.STRING
+			type: DataTypes.STRING,
+			validate: {
+				allowNull: false,
+				notEmpty: true
+			}
 		},
 		email: {
-			type: DataTypes.STRING
+			type: DataTypes.STRING,
+			validate: {
+				isEmail: true, 
+			}
 		}
 	});
 	return User;

@@ -5,7 +5,11 @@ module.exports = function(sequelize, DataTypes) {
 			primaryKey: true,
 		},
 		name: {
-			type: DataTypes.STRING
+			type: DataTypes.STRING,
+			validate: {
+				allowNull: false,
+				notEmpty: true
+			}
 		},
 		userId: {
 			type: DataTypes.INTEGER
@@ -19,7 +23,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		hasRan: {
 			type: DataTypes.BOOLEAN,
-			defaultValue: true
+			defaultValue: false
 		},
 		authRequired: {
 			type: DataTypes.BOOLEAN,
